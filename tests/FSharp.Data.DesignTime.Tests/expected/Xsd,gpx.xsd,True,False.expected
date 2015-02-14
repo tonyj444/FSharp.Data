@@ -1,14 +1,14 @@
 class XsdProvider
     static member AsyncGetSample: () -> XsdProvider+Schema async
     let f = new Func<_,_>(fun (t:TextReader) -> XmlElement.Create(t))
-    TextRuntime.AsyncMap((IO.asyncReadTextAtRuntimeWithDesignTimeRules @"<RESOLUTION_FOLDER>" "" "XSD" "gpx.xsd"), f)
+    TextRuntime.AsyncMap((IO.asyncReadTextAtRuntimeWithDesignTimeRules @"<RESOLUTION_FOLDER>" "" "XSD" "" "gpx.xsd"), f)
 
     static member AsyncLoad: uri:string -> XsdProvider+Schema async
     let f = new Func<_,_>(fun (t:TextReader) -> XmlElement.Create(t))
-    TextRuntime.AsyncMap((IO.asyncReadTextAtRuntime false @"<RESOLUTION_FOLDER>" "" "XSD" uri), f)
+    TextRuntime.AsyncMap((IO.asyncReadTextAtRuntime false @"<RESOLUTION_FOLDER>" "" "XSD" "" uri), f)
 
     static member GetSample: () -> XsdProvider+Schema
-    XmlElement.Create(FSharpAsync.RunSynchronously((IO.asyncReadTextAtRuntimeWithDesignTimeRules @"<RESOLUTION_FOLDER>" "" "XSD" "gpx.xsd")))
+    XmlElement.Create(FSharpAsync.RunSynchronously((IO.asyncReadTextAtRuntimeWithDesignTimeRules @"<RESOLUTION_FOLDER>" "" "XSD" "" "gpx.xsd")))
 
     static member Load: stream:System.IO.Stream -> XsdProvider+Schema
     XmlElement.Create(((new StreamReader(stream)) :> TextReader))
@@ -17,7 +17,7 @@ class XsdProvider
     XmlElement.Create(reader)
 
     static member Load: uri:string -> XsdProvider+Schema
-    XmlElement.Create(FSharpAsync.RunSynchronously((IO.asyncReadTextAtRuntime false @"<RESOLUTION_FOLDER>" "" "XSD" uri)))
+    XmlElement.Create(FSharpAsync.RunSynchronously((IO.asyncReadTextAtRuntime false @"<RESOLUTION_FOLDER>" "" "XSD" "" uri)))
 
     static member Parse: text:string -> XsdProvider+Schema
     XmlElement.Create(((new StringReader(text)) :> TextReader))
@@ -459,7 +459,7 @@ class XsdProvider
                       ((new StringReader(t)) :> TextReader))
 
 
-class XsdProvider+BoundsType : FDR.XmlElement
+class XsdProvider+BoundsType : FDR.BaseTypes.XmlElement
     new : minlat:decimal -> minlon:decimal -> maxlat:decimal -> maxlon:decimal -> targetNamespace:string -> typeName:string -> XsdProvider+BoundsType
     XmlRuntime.CreateRecord("boundsType", 
                             [| ("minlat",
@@ -473,26 +473,26 @@ class XsdProvider+BoundsType : FDR.XmlElement
                             [| ("TargetNamespace",
                                 (targetNamespace :> obj))
                                ("TypeName",
-                                (typeName :> obj)) |], "en-GB")
+                                (typeName :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+BoundsType
     XmlElement.Create(xElement)
 
     member Maxlat: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "maxlat")
-    TextRuntime.GetNonOptionalValue("Attribute maxlat", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute maxlat", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member Maxlon: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "maxlon")
-    TextRuntime.GetNonOptionalValue("Attribute maxlon", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute maxlon", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member Minlat: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "minlat")
-    TextRuntime.GetNonOptionalValue("Attribute minlat", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute minlat", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member Minlon: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "minlon")
-    TextRuntime.GetNonOptionalValue("Attribute minlon", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute minlon", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member TargetNamespace: string with get
     ("http://www.topografix.com/GPX/1/1" :> obj)
@@ -501,7 +501,7 @@ class XsdProvider+BoundsType : FDR.XmlElement
     ("boundsType" :> obj)
 
 
-class XsdProvider+CopyrightType : FDR.XmlElement
+class XsdProvider+CopyrightType : FDR.BaseTypes.XmlElement
     new : author:string -> targetNamespace:string -> typeName:string -> year:string option -> license:string option -> XsdProvider+CopyrightType
     XmlRuntime.CreateRecord("copyrightType", 
                             [| ("author",
@@ -513,7 +513,7 @@ class XsdProvider+CopyrightType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}year",
                                 (year :> obj))
                                ("{http://www.topografix.com/GPX/1/1}license",
-                                (license :> obj)) |], "en-GB")
+                                (license :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+CopyrightType
     XmlElement.Create(xElement)
@@ -539,7 +539,7 @@ class XsdProvider+CopyrightType : FDR.XmlElement
                                                                                                  TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertString(value), value)))
 
 
-class XsdProvider+EmailType : FDR.XmlElement
+class XsdProvider+EmailType : FDR.BaseTypes.XmlElement
     new : id:string -> domain:string -> targetNamespace:string -> typeName:string -> XsdProvider+EmailType
     XmlRuntime.CreateRecord("emailType", 
                             [| ("id",
@@ -549,7 +549,7 @@ class XsdProvider+EmailType : FDR.XmlElement
                             [| ("TargetNamespace",
                                 (targetNamespace :> obj))
                                ("TypeName",
-                                (typeName :> obj)) |], "en-GB")
+                                (typeName :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+EmailType
     XmlElement.Create(xElement)
@@ -569,14 +569,14 @@ class XsdProvider+EmailType : FDR.XmlElement
     ("emailType" :> obj)
 
 
-class XsdProvider+ExtensionsType : FDR.XmlElement
+class XsdProvider+ExtensionsType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> XsdProvider+ExtensionsType
     XmlRuntime.CreateRecord("extensionsType", 
                             [| |], 
                             [| ("TargetNamespace",
                                 (targetNamespace :> obj))
                                ("TypeName",
-                                (typeName :> obj)) |], "en-GB")
+                                (typeName :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+ExtensionsType
     XmlElement.Create(xElement)
@@ -588,7 +588,7 @@ class XsdProvider+ExtensionsType : FDR.XmlElement
     ("extensionsType" :> obj)
 
 
-class XsdProvider+Gpx : FDR.XmlElement
+class XsdProvider+Gpx : FDR.BaseTypes.XmlElement
     new : version:string -> creator:string -> targetNamespace:string -> typeName:string -> metadata:XsdProvider+MetadataType option -> wpts:XsdProvider+WptType[] -> rtes:XsdProvider+RteType[] -> trks:XsdProvider+TrkType[] -> extensions:XsdProvider+ExtensionsType option -> XsdProvider+Gpx
     XmlRuntime.CreateRecord("gpx", 
                             [| ("version",
@@ -608,7 +608,7 @@ class XsdProvider+Gpx : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}trk",
                                 (trks :> obj))
                                ("{http://www.topografix.com/GPX/1/1}extensions",
-                                (extensions :> obj)) |], "en-GB")
+                                (extensions :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+Gpx
     XmlElement.Create(xElement)
@@ -643,7 +643,7 @@ class XsdProvider+Gpx : FDR.XmlElement
     XmlRuntime.ConvertArray(this, "{http://www.topografix.com/GPX/1/1}wpt", new Func<_,_>(id)))
 
 
-class XsdProvider+GpxType : FDR.XmlElement
+class XsdProvider+GpxType : FDR.BaseTypes.XmlElement
     new : version:string -> creator:string -> targetNamespace:string -> typeName:string -> metadata:XsdProvider+MetadataType option -> wpts:XsdProvider+WptType[] -> rtes:XsdProvider+RteType[] -> trks:XsdProvider+TrkType[] -> extensions:XsdProvider+ExtensionsType option -> XsdProvider+GpxType
     XmlRuntime.CreateRecord("gpxType", 
                             [| ("version",
@@ -663,7 +663,7 @@ class XsdProvider+GpxType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}trk",
                                 (trks :> obj))
                                ("{http://www.topografix.com/GPX/1/1}extensions",
-                                (extensions :> obj)) |], "en-GB")
+                                (extensions :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+GpxType
     XmlElement.Create(xElement)
@@ -698,7 +698,7 @@ class XsdProvider+GpxType : FDR.XmlElement
     XmlRuntime.ConvertArray(this, "{http://www.topografix.com/GPX/1/1}wpt", new Func<_,_>(id)))
 
 
-class XsdProvider+LinkType : FDR.XmlElement
+class XsdProvider+LinkType : FDR.BaseTypes.XmlElement
     new : href:string -> targetNamespace:string -> typeName:string -> text:string option -> type:string option -> XsdProvider+LinkType
     XmlRuntime.CreateRecord("linkType", 
                             [| ("href",
@@ -710,7 +710,7 @@ class XsdProvider+LinkType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}text",
                                 (text :> obj))
                                ("{http://www.topografix.com/GPX/1/1}type",
-                                (type :> obj)) |], "en-GB")
+                                (type :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+LinkType
     XmlElement.Create(xElement)
@@ -736,7 +736,7 @@ class XsdProvider+LinkType : FDR.XmlElement
     ("linkType" :> obj)
 
 
-class XsdProvider+MetadataType : FDR.XmlElement
+class XsdProvider+MetadataType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> name:string option -> desc:string option -> author:XsdProvider+PersonType option -> copyright:XsdProvider+CopyrightType option -> links:XsdProvider+LinkType[] -> time:System.DateTime option -> keywords:string option -> bounds:XsdProvider+BoundsType option -> extensions:XsdProvider+ExtensionsType option -> XsdProvider+MetadataType
     XmlRuntime.CreateRecord("metadataType", 
                             [| |], 
@@ -761,7 +761,7 @@ class XsdProvider+MetadataType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}bounds",
                                 (bounds :> obj))
                                ("{http://www.topografix.com/GPX/1/1}extensions",
-                                (extensions :> obj)) |], "en-GB")
+                                (extensions :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+MetadataType
     XmlElement.Create(xElement)
@@ -802,13 +802,13 @@ class XsdProvider+MetadataType : FDR.XmlElement
     member Time: System.DateTime option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}time", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                  let value = XmlRuntime.TryGetValue(t)
-                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDateTime("en-GB", value), value)))
+                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDateTime("en-US", value), value)))
 
     member TypeName: string with get
     ("metadataType" :> obj)
 
 
-class XsdProvider+PersonType : FDR.XmlElement
+class XsdProvider+PersonType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> name:string option -> email:XsdProvider+EmailType option -> link:XsdProvider+LinkType option -> XsdProvider+PersonType
     XmlRuntime.CreateRecord("personType", 
                             [| |], 
@@ -821,7 +821,7 @@ class XsdProvider+PersonType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}email",
                                 (email :> obj))
                                ("{http://www.topografix.com/GPX/1/1}link",
-                                (link :> obj)) |], "en-GB")
+                                (link :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+PersonType
     XmlElement.Create(xElement)
@@ -844,7 +844,7 @@ class XsdProvider+PersonType : FDR.XmlElement
     ("personType" :> obj)
 
 
-class XsdProvider+PtType : FDR.XmlElement
+class XsdProvider+PtType : FDR.BaseTypes.XmlElement
     new : lat:decimal -> lon:decimal -> targetNamespace:string -> typeName:string -> ele:decimal option -> time:System.DateTime option -> XsdProvider+PtType
     XmlRuntime.CreateRecord("ptType", 
                             [| ("lat",
@@ -858,7 +858,7 @@ class XsdProvider+PtType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}ele",
                                 (ele :> obj))
                                ("{http://www.topografix.com/GPX/1/1}time",
-                                (time :> obj)) |], "en-GB")
+                                (time :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+PtType
     XmlElement.Create(xElement)
@@ -866,15 +866,15 @@ class XsdProvider+PtType : FDR.XmlElement
     member Ele: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}ele", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                 let value = XmlRuntime.TryGetValue(t)
-                                                                                                TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Lat: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "lat")
-    TextRuntime.GetNonOptionalValue("Attribute lat", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute lat", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member Lon: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "lon")
-    TextRuntime.GetNonOptionalValue("Attribute lon", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute lon", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member TargetNamespace: string with get
     ("http://www.topografix.com/GPX/1/1" :> obj)
@@ -882,13 +882,13 @@ class XsdProvider+PtType : FDR.XmlElement
     member Time: System.DateTime option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}time", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                  let value = XmlRuntime.TryGetValue(t)
-                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDateTime("en-GB", value), value)))
+                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDateTime("en-US", value), value)))
 
     member TypeName: string with get
     ("ptType" :> obj)
 
 
-class XsdProvider+PtsegType : FDR.XmlElement
+class XsdProvider+PtsegType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> pts:XsdProvider+PtType[] -> XsdProvider+PtsegType
     XmlRuntime.CreateRecord("ptsegType", 
                             [| |], 
@@ -897,7 +897,7 @@ class XsdProvider+PtsegType : FDR.XmlElement
                                ("TypeName",
                                 (typeName :> obj))
                                ("{http://www.topografix.com/GPX/1/1}pt",
-                                (pts :> obj)) |], "en-GB")
+                                (pts :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+PtsegType
     XmlElement.Create(xElement)
@@ -912,7 +912,7 @@ class XsdProvider+PtsegType : FDR.XmlElement
     ("ptsegType" :> obj)
 
 
-class XsdProvider+RteType : FDR.XmlElement
+class XsdProvider+RteType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> name:string option -> cmt:string option -> desc:string option -> src:string option -> links:XsdProvider+LinkType[] -> number:string option -> type:string option -> extensions:XsdProvider+ExtensionsType option -> rtepts:XsdProvider+WptType[] -> XsdProvider+RteType
     XmlRuntime.CreateRecord("rteType", 
                             [| |], 
@@ -937,7 +937,7 @@ class XsdProvider+RteType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}extensions",
                                 (extensions :> obj))
                                ("{http://www.topografix.com/GPX/1/1}rtept",
-                                (rtepts :> obj)) |], "en-GB")
+                                (rtepts :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+RteType
     XmlElement.Create(xElement)
@@ -988,7 +988,7 @@ class XsdProvider+RteType : FDR.XmlElement
     ("rteType" :> obj)
 
 
-class XsdProvider+Schema : FDR.XmlElement
+class XsdProvider+Schema : FDR.BaseTypes.XmlElement
     new : boundsType:XsdProvider+BoundsType -> copyrightType:XsdProvider+CopyrightType -> degreesType:decimal -> dgpsStationType:int -> emailType:XsdProvider+EmailType -> extensionsType:XsdProvider+ExtensionsType -> fixType:string -> gpx:XsdProvider+Gpx -> gpxType:XsdProvider+GpxType -> latitudeType:decimal -> linkType:XsdProvider+LinkType -> longitudeType:decimal -> metadataType:XsdProvider+MetadataType -> personType:XsdProvider+PersonType -> ptType:XsdProvider+PtType -> ptsegType:XsdProvider+PtsegType -> rteType:XsdProvider+RteType -> trkType:XsdProvider+TrkType -> trksegType:XsdProvider+TrksegType -> wptType:XsdProvider+WptType -> XsdProvider+Schema
     XmlRuntime.CreateRecord("Schema", 
                             [| |], 
@@ -1031,7 +1031,7 @@ class XsdProvider+Schema : FDR.XmlElement
                                ("trksegType",
                                 (trksegType :> obj))
                                ("wptType",
-                                (wptType :> obj)) |], "en-GB")
+                                (wptType :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+Schema
     XmlElement.Create(xElement)
@@ -1044,11 +1044,11 @@ class XsdProvider+Schema : FDR.XmlElement
 
     member DegreesType: decimal with get
     let value = XmlRuntime.TryGetValue(XmlRuntime.GetChild(this, "degreesType"))
-    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member DgpsStationType: int with get
     let value = XmlRuntime.TryGetValue(XmlRuntime.GetChild(this, "dgpsStationType"))
-    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertInteger("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertInteger("en-US", value), value)
 
     member EmailType: XsdProvider+EmailType with get
     XmlRuntime.GetChild(this, "emailType")
@@ -1068,14 +1068,14 @@ class XsdProvider+Schema : FDR.XmlElement
 
     member LatitudeType: decimal with get
     let value = XmlRuntime.TryGetValue(XmlRuntime.GetChild(this, "latitudeType"))
-    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member LinkType: XsdProvider+LinkType with get
     XmlRuntime.GetChild(this, "linkType")
 
     member LongitudeType: decimal with get
     let value = XmlRuntime.TryGetValue(XmlRuntime.GetChild(this, "longitudeType"))
-    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member MetadataType: XsdProvider+MetadataType with get
     XmlRuntime.GetChild(this, "metadataType")
@@ -1102,7 +1102,7 @@ class XsdProvider+Schema : FDR.XmlElement
     XmlRuntime.GetChild(this, "wptType")
 
 
-class XsdProvider+TrkType : FDR.XmlElement
+class XsdProvider+TrkType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> name:string option -> cmt:string option -> desc:string option -> src:string option -> links:XsdProvider+LinkType[] -> number:string option -> type:string option -> extensions:XsdProvider+ExtensionsType option -> trksegs:XsdProvider+TrksegType[] -> XsdProvider+TrkType
     XmlRuntime.CreateRecord("trkType", 
                             [| |], 
@@ -1127,7 +1127,7 @@ class XsdProvider+TrkType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}extensions",
                                 (extensions :> obj))
                                ("{http://www.topografix.com/GPX/1/1}trkseg",
-                                (trksegs :> obj)) |], "en-GB")
+                                (trksegs :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+TrkType
     XmlElement.Create(xElement)
@@ -1178,7 +1178,7 @@ class XsdProvider+TrkType : FDR.XmlElement
     ("trkType" :> obj)
 
 
-class XsdProvider+TrksegType : FDR.XmlElement
+class XsdProvider+TrksegType : FDR.BaseTypes.XmlElement
     new : targetNamespace:string -> typeName:string -> trkpts:XsdProvider+WptType[] -> extensions:XsdProvider+ExtensionsType option -> XsdProvider+TrksegType
     XmlRuntime.CreateRecord("trksegType", 
                             [| |], 
@@ -1189,7 +1189,7 @@ class XsdProvider+TrksegType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}trkpt",
                                 (trkpts :> obj))
                                ("{http://www.topografix.com/GPX/1/1}extensions",
-                                (extensions :> obj)) |], "en-GB")
+                                (extensions :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+TrksegType
     XmlElement.Create(xElement)
@@ -1207,7 +1207,7 @@ class XsdProvider+TrksegType : FDR.XmlElement
     ("trksegType" :> obj)
 
 
-class XsdProvider+WptType : FDR.XmlElement
+class XsdProvider+WptType : FDR.BaseTypes.XmlElement
     new : lat:decimal -> lon:decimal -> targetNamespace:string -> typeName:string -> ele:decimal option -> time:System.DateTime option -> magvar:decimal option -> geoidheight:decimal option -> name:string option -> cmt:string option -> desc:string option -> src:string option -> links:XsdProvider+LinkType[] -> sym:string option -> type:string option -> fix:string option -> sat:string option -> hdop:decimal option -> vdop:decimal option -> pdop:decimal option -> ageofdgpsdata:decimal option -> dgpsid:int option -> extensions:XsdProvider+ExtensionsType option -> XsdProvider+WptType
     XmlRuntime.CreateRecord("wptType", 
                             [| ("lat",
@@ -1255,7 +1255,7 @@ class XsdProvider+WptType : FDR.XmlElement
                                ("{http://www.topografix.com/GPX/1/1}dgpsid",
                                 (dgpsid :> obj))
                                ("{http://www.topografix.com/GPX/1/1}extensions",
-                                (extensions :> obj)) |], "en-GB")
+                                (extensions :> obj)) |], "en-US")
 
     new : xElement:System.Xml.Linq.XElement -> XsdProvider+WptType
     XmlElement.Create(xElement)
@@ -1263,7 +1263,7 @@ class XsdProvider+WptType : FDR.XmlElement
     member Ageofdgpsdata: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}ageofdgpsdata", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                           let value = XmlRuntime.TryGetValue(t)
-                                                                                                          TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                          TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Cmt: string option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}cmt", new Func<_,_>(fun (t:XmlElement) -> 
@@ -1278,12 +1278,12 @@ class XsdProvider+WptType : FDR.XmlElement
     member Dgpsid: int option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}dgpsid", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                    let value = XmlRuntime.TryGetValue(t)
-                                                                                                   TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertInteger("en-GB", value), value)))
+                                                                                                   TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertInteger("en-US", value), value)))
 
     member Ele: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}ele", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                 let value = XmlRuntime.TryGetValue(t)
-                                                                                                TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Extensions: XsdProvider+ExtensionsType option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}extensions", new Func<_,_>(id)))
@@ -1296,28 +1296,28 @@ class XsdProvider+WptType : FDR.XmlElement
     member Geoidheight: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}geoidheight", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                         let value = XmlRuntime.TryGetValue(t)
-                                                                                                        TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                        TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Hdop: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}hdop", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                  let value = XmlRuntime.TryGetValue(t)
-                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Lat: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "lat")
-    TextRuntime.GetNonOptionalValue("Attribute lat", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute lat", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member Links: XsdProvider+LinkType[] with get
     XmlRuntime.ConvertArray(this, "{http://www.topografix.com/GPX/1/1}link", new Func<_,_>(id)))
 
     member Lon: decimal with get
     let value = XmlRuntime.TryGetAttribute(this, "lon")
-    TextRuntime.GetNonOptionalValue("Attribute lon", TextRuntime.ConvertDecimal("en-GB", value), value)
+    TextRuntime.GetNonOptionalValue("Attribute lon", TextRuntime.ConvertDecimal("en-US", value), value)
 
     member Magvar: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}magvar", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                    let value = XmlRuntime.TryGetValue(t)
-                                                                                                   TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                   TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Name: string option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}name", new Func<_,_>(fun (t:XmlElement) -> 
@@ -1327,7 +1327,7 @@ class XsdProvider+WptType : FDR.XmlElement
     member Pdop: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}pdop", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                  let value = XmlRuntime.TryGetValue(t)
-                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
     member Sat: string option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}sat", new Func<_,_>(fun (t:XmlElement) -> 
@@ -1350,7 +1350,7 @@ class XsdProvider+WptType : FDR.XmlElement
     member Time: System.DateTime option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}time", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                  let value = XmlRuntime.TryGetValue(t)
-                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDateTime("en-GB", value), value)))
+                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDateTime("en-US", value), value)))
 
     member Type: string option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}type", new Func<_,_>(fun (t:XmlElement) -> 
@@ -1363,6 +1363,6 @@ class XsdProvider+WptType : FDR.XmlElement
     member Vdop: decimal option with get
     XmlRuntime.ConvertOptional(this, "{http://www.topografix.com/GPX/1/1}vdop", new Func<_,_>(fun (t:XmlElement) -> 
                                                                                                  let value = XmlRuntime.TryGetValue(t)
-                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-GB", value), value)))
+                                                                                                 TextRuntime.GetNonOptionalValue("Value", TextRuntime.ConvertDecimal("en-US", value), value)))
 
 

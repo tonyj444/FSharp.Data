@@ -8,6 +8,7 @@ open Microsoft.FSharp.Core.CompilerServices
 open ProviderImplementation.ProvidedTypes
 open ProviderImplementation.ProviderHelpers
 open FSharp.Data.Runtime
+open FSharp.Data.Runtime.BaseTypes
 
 // ----------------------------------------------------------------------------------------------
 
@@ -109,7 +110,7 @@ type public XsdProvider(cfg:TypeProviderConfig) as this =
         let ctx = XmlGenerationContext.Create(System.Globalization.CultureInfo.CurrentCulture.Name, tpType, true, replacer)  
         XmlTypeBuilder.generateXmlType ctx wrappedType, inferredType
       
-      let getSpec (schema : XmlSchema seq) = 
+      let getSpecFromSamples (schema : XmlSchema seq) = 
         let result, inferredType = schema |> Seq.exactlyOne |> getTypesFromSchema 
 
         addTopLevelItems inferredType result
@@ -121,10 +122,8 @@ type public XsdProvider(cfg:TypeProviderConfig) as this =
           CreateFromTextReaderForSampleList = fun reader -> 
             result.Converter <@@ XmlElement.CreateList(%reader) @@> }
       
-      generateType "XSD" sample false
-                               parseSingle parseList getSpec
-                               version this cfg replacer resolutionFolder typeName
-    
+      generateType "XSD" sample false parseSingle parseList getSpecFromSamples
+                   version this cfg replacer "" resolutionFolder "" typeName
 
   // Add static parameter that specifies the API we want to get (compile-time) 
   let parameters = 

@@ -9778,3 +9778,4 @@ class WorldBankDataProvider+ServiceTypes+IndicatorsDescriptions : FDR.WorldBank.
     member ``Working capital financed by banks (%)``: FDR.WorldBank.IndicatorDescription with get
     (this :> IIndicatorsDescriptions).GetIndicator("GFDD.AI.35")
 
+

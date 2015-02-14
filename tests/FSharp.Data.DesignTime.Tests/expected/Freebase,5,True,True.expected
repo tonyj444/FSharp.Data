@@ -2276,3 +2276,4 @@ class FreebaseDataProvider+ServiceTypes+Aviation+Aviation+Aircraft_designerDataI
     member ``de Havilland``: FreebaseDataProvider+ServiceTypes+Aviation+Aviation+Aircraft_designerDataIndividuals10+de Havilland Item with get
     this.GetIndividualById("/aviation/aircraft_designer", "/m/01962k")
 
+
