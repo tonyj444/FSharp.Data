@@ -233,11 +233,16 @@ module HttpResponseHeaders =
     /// Indicates the authentication scheme that should be used to access the requested entity.
     let [<Literal>] WWWAuthenticate = "WWW-Authenticate"
 
+type MultipartForm = 
+    | Text of string * string
+    | SingleFile of string * string * string * byte[]
+
 /// The body to send in an HTTP request
 type HttpRequestBody =
     | TextRequest of string
     | BinaryUpload of byte[]
     | FormValues of seq<string * string>
+    | MultipartForm of seq<MultipartForm>
 
 /// The response body returned by an HTTP request
 type HttpResponseBody =
@@ -267,7 +272,7 @@ module HttpContentTypes =
     /// */*
     let [<Literal>] Any = "*/*"
     /// plain/text
-    let [<Literal>] Text = "plain/text"
+    let [<Literal>] Text = "text/plain"
     /// application/octet-stream
     let [<Literal>] Binary = "application/octet-stream"
     /// application/octet-stream
@@ -296,6 +301,8 @@ module HttpContentTypes =
     let [<Literal>] Soap = "application/soap+xml"
     /// text/csv
     let [<Literal>] Csv = "text/csv"
+    /// multipart/form-data
+    let [<Literal>] MultiPartFormValues = "multipart/form-data"
 
 type private HeaderEnum = System.Net.HttpRequestHeader
 
@@ -751,6 +758,26 @@ type Http private() =
                         |> String.concat "&"
                         |> HttpEncodings.PostDefaultEncoding.GetBytes
                     HttpContentTypes.FormValues, bytes
+                | MultipartForm values ->
+                    let boundary = Guid.NewGuid().ToString()
+                    let partBuilder f = 
+                        match f with
+                        | MultipartForm.Text (k, v) -> 
+                            sprintf "\r\n--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s" boundary k v
+                            |> HttpEncodings.PostDefaultEncoding.GetBytes
+                        | MultipartForm.SingleFile (name, filename, contentType, data) -> 
+                            sprintf "\r\n--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n" boundary name filename contentType
+                            |> HttpEncodings.PostDefaultEncoding.GetBytes
+                            |> Array.append <| data
+                    let footer = sprintf "\r\n--%s--" boundary |> HttpEncodings.PostDefaultEncoding.GetBytes
+                    let bytes = 
+                        values
+                        |> Seq.map partBuilder
+                        |> Seq.fold Seq.append Seq.empty
+                        |> Array.ofSeq
+                       
+                    HttpContentTypes.MultiPartFormValues + "; boundary=" + boundary, Array.append bytes footer
+                    // TODO: append boundary even if ContentType provided
 
             // Set default content type if it is not specified by the user
             if not hasContentType then req.ContentType <- defaultContentType
