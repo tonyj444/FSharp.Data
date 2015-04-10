@@ -233,16 +233,16 @@ module HttpResponseHeaders =
     /// Indicates the authentication scheme that should be used to access the requested entity.
     let [<Literal>] WWWAuthenticate = "WWW-Authenticate"
 
-type MultipartForm = 
-    | Text of string * string
-    | SingleFile of string * string * string * byte[]
+type MultipartFormEntry = 
+    | TextField of string * string
+    | SingleFile of name : string * filename : string * contentType : string * byte[]
 
 /// The body to send in an HTTP request
 type HttpRequestBody =
     | TextRequest of string
     | BinaryUpload of byte[]
     | FormValues of seq<string * string>
-    | MultipartForm of seq<MultipartForm>
+    | MultipartForm of seq<MultipartFormEntry> * boundary : string
 
 /// The response body returned by an HTTP request
 type HttpResponseBody =
@@ -758,14 +758,13 @@ type Http private() =
                         |> String.concat "&"
                         |> HttpEncodings.PostDefaultEncoding.GetBytes
                     HttpContentTypes.FormValues, bytes
-                | MultipartForm values ->
-                    let boundary = Guid.NewGuid().ToString()
+                | MultipartForm (values, boundary) ->
                     let partBuilder f = 
                         match f with
-                        | MultipartForm.Text (k, v) -> 
+                        | TextField (k, v) -> 
                             sprintf "\r\n--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s" boundary k v
                             |> HttpEncodings.PostDefaultEncoding.GetBytes
-                        | MultipartForm.SingleFile (name, filename, contentType, data) -> 
+                        | SingleFile (name, filename, contentType, data) -> 
                             sprintf "\r\n--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n" boundary name filename contentType
                             |> HttpEncodings.PostDefaultEncoding.GetBytes
                             |> Array.append <| data
@@ -775,8 +774,9 @@ type Http private() =
                         |> Seq.map partBuilder
                         |> Seq.fold Seq.append Seq.empty
                         |> Array.ofSeq
-                       
-                    HttpContentTypes.MultiPartFormValues + "; boundary=" + boundary, Array.append bytes footer
+                        |> Array.append <| footer
+                    let header = sprintf "%s; boundary=%s" HttpContentTypes.MultiPartFormValues boundary
+                    header, bytes
                     // TODO: append boundary even if ContentType provided
 
             // Set default content type if it is not specified by the user
