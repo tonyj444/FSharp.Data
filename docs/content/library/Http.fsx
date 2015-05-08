@@ -155,10 +155,27 @@ Http.RequestString
     body = TextRequest """ {"test": 42} """)
 
 (**
+## Basic Auth
+
+If you need to include Authentication with your request, a convenience function exists for Basic Auth:
+*)
+Http.RequestString
+  ( "http://httpbin.org/post",
+    headers = [ BasicAuth "DemoUser" "Password123" ],
+    body = TextRequest """ {"test": 42} """)
+
+(**
+
+This will add an Authorization header to the headers collection. Should a different authentication method
+be needed the best approach is probably to use HttpWebRequest.Credentials from customizeHttpRequest (see
+Customizing the HTTP request below).
+*)
+
+(**
 ## Maintaining cookies across requests
 
-If you want to maintain cookies between requests, you can specify the `cookieContainer` 
-parameter. The following example will request the MSDN documentation for the 
+If you want to maintain cookies between requests, you can specify the `cookieContainer`
+parameter. The following example will request the MSDN documentation for the
 `HttpRequest` class. It will return the code snippets in C# and not F#:
 *)
 
