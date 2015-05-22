@@ -765,6 +765,8 @@ type Http private() =
                         |> HttpEncodings.PostDefaultEncoding.GetBytes
                     HttpContentTypes.FormValues, bytes
                 | MultipartForm (values, boundary) ->
+                    if hasContentType then
+                        failwith "ContentType must not be specified for MultipartForm requests"
                     let partBuilder f = 
                         match f with
                         | TextField (k, v) -> 
@@ -783,7 +785,6 @@ type Http private() =
                         |> Array.append <| footer
                     let header = sprintf "%s; boundary=%s" HttpContentTypes.MultiPartFormValues boundary
                     header, bytes
-                    // TODO: append boundary even if ContentType provided
 
             // Set default content type if it is not specified by the user
             if not hasContentType then req.ContentType <- defaultContentType
